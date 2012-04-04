@@ -88,26 +88,46 @@ enddo
               write(*,*) "v_ve(1:1)=> ", v_ve(1:1)
               write(*,*) "v_ve(2:2)=> ", v_ve(2:2)
               ! write to file only the selected params or all if any.
+              ! PARAMETERS
               if(size(cnf%file_parameters_i) == 0) then
                       write(lu_stat,50) time, U, v_ve
-                      write(lu_curr,50) time, v_cr
               else
                       do numeroDeParametro=1 , size(cnf%file_parameters_i)
                       valorDeParametro = cnf%file_parameters_i(numeroDeParametro)
-                      !write (*,*) "FINCIONAAAAAA", cnf%file_parameters_i(numeroDeParametro:numeroDeParametro)
                       if(numeroDeParametro==1) then
                               if(size(cnf%file_parameters_i) == 1) then
                                       write(lu_stat,50) time, U , v_ve(valorDeParametro:valorDeParametro)
-                                      write(lu_curr,50) time,     v_cr(valorDeParametro:valorDeParametro)
                               else
                                       write(lu_stat,90) time, U , v_ve(valorDeParametro:valorDeParametro)
-                                      write(lu_curr,90) time,     v_cr(valorDeParametro:valorDeParametro)
                               end if
                       else
                               write(lu_stat,95) v_ve(valorDeParametro:valorDeParametro)
+                      end if
+                      enddo ! loop for every param.
+              end if ! params or not.
+              ! CURRENTS
+              if(size(cnf%file_currents_i) == 0) then
+                      !no guardo nada
+                      !write(lu_curr,50) time, v_cr
+              else
+              if(size(cnf%file_currents_i) == 1 .AND. cnf%file_currents_i(1)==0) then
+                      !guardo todo
+                      write(lu_curr,50) time, v_cr
+              else
+                      !guardo solo lo indicado.
+                      do numeroDeParametro=1 , size(cnf%file_currents_i)
+                      valorDeParametro = cnf%file_currents_i(numeroDeParametro)
+                      if(numeroDeParametro==1) then
+                              if(size(cnf%file_currents_i) == 1) then
+                                      write(lu_curr,50) time,     v_cr(valorDeParametro:valorDeParametro)
+                              else
+                                      write(lu_curr,90) time,     v_cr(valorDeParametro:valorDeParametro)
+                              end if
+                      else
                               write(lu_curr,95) v_cr(valorDeParametro:valorDeParametro)
                       end if
                       enddo ! loop for every param.
+              end if
               end if ! params or not.
       end if
     endif

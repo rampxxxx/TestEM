@@ -24,6 +24,7 @@ module mod_leconf
     type(t_msk)           :: prm
     type(t_stm)           :: stm
     integer(ip), allocatable :: file_parameters_i(:)
+    integer(ip), allocatable :: file_currents_i(:)
   end type t_cnf
 ! ------------------------------------------------------------------------------
 contains
@@ -41,6 +42,7 @@ subroutine readconfile (cnf)
   character (len = 256)    :: fname,strout
   logical                  :: flag
   integer(ip)              :: file_parameters_i(MAX)
+  integer(ip)              :: file_currents_i(MAX)
 
   call a_unit(lu_cfg)
   call fun_getarg (1,'-i',fname)  !.Nombre del archivo de configuracion
@@ -90,6 +92,13 @@ subroutine readconfile (cnf)
         allocate (cnf%file_parameters_i(n))
         cnf%file_parameters_i(1:n)=file_parameters_i
         !cnf%file_parameters_i(1:n)=dat_i
+        !.
+       elseif (index(strout,'#FILE_CURRENTS') == 1) then
+        !.
+        read (lu_cfg, * ,iostat=io_err) n,(file_currents_i(m),m=1,n)
+        if (io_err > 0) stop '>>>.Error reading file currents mask and values'
+        allocate (cnf%file_currents_i(n))
+        cnf%file_currents_i(1:n)=file_currents_i
         !.
       else
           if (index(strout,'#END')     == 1) exit
