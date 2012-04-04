@@ -88,7 +88,8 @@ subroutine readconfile (cnf)
         read (lu_cfg, * ,iostat=io_err) n,(file_parameters_i(m),m=1,n)
         if (io_err > 0) stop '>>>.Error reading file parameters mask and values'
         allocate (cnf%file_parameters_i(n))
-        cnf%file_parameters_i(1:n)=dat_i
+        cnf%file_parameters_i(1:n)=file_parameters_i
+        !cnf%file_parameters_i(1:n)=dat_i
         !.
       else
           if (index(strout,'#END')     == 1) exit

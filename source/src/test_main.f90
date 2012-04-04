@@ -20,6 +20,7 @@ program test_main
   real(rp), allocatable     :: dat_r(:)
   integer(ip), allocatable  :: dat_i(:)
   integer                   :: numeroDeParametro
+  integer(ip)               :: valorDeParametro
 
   !.
 
@@ -69,6 +70,12 @@ program test_main
   endif
   U = initcond_elecmodel (ict) 
 
+write(*,*) "Numero de Parametros=>",size(cnf%file_parameters_i)
+do numeroDeParametro=1 , size(cnf%file_parameters_i)
+write(*,*) "Parametro=>", cnf%file_parameters_i(numeroDeParametro:numeroDeParametro)
+enddo
+
+
   call get_time(t1)
   do while (time < step(3))
     Istm = get_stimulus(cnf%stm, time, step(3))
@@ -86,17 +93,19 @@ program test_main
                       write(lu_curr,50) time, v_cr
               else
                       do numeroDeParametro=1 , size(cnf%file_parameters_i)
+                      valorDeParametro = cnf%file_parameters_i(numeroDeParametro)
+                      !write (*,*) "FINCIONAAAAAA", cnf%file_parameters_i(numeroDeParametro:numeroDeParametro)
                       if(numeroDeParametro==1) then
                               if(size(cnf%file_parameters_i) == 1) then
-                                      write(lu_stat,50) time, U , v_ve(numeroDeParametro:numeroDeParametro)
-                                      write(lu_curr,50) time,     v_cr(numeroDeParametro:numeroDeParametro)
+                                      write(lu_stat,50) time, U , v_ve(valorDeParametro:valorDeParametro)
+                                      write(lu_curr,50) time,     v_cr(valorDeParametro:valorDeParametro)
                               else
-                                      write(lu_stat,90) time, U , v_ve(numeroDeParametro:numeroDeParametro)
-                                      write(lu_curr,90) time,     v_cr(numeroDeParametro:numeroDeParametro)
+                                      write(lu_stat,90) time, U , v_ve(valorDeParametro:valorDeParametro)
+                                      write(lu_curr,90) time,     v_cr(valorDeParametro:valorDeParametro)
                               end if
                       else
-                              write(lu_stat,95) v_ve(numeroDeParametro:numeroDeParametro)
-                              write(lu_curr,95) v_cr(numeroDeParametro:numeroDeParametro)
+                              write(lu_stat,95) v_ve(valorDeParametro:valorDeParametro)
+                              write(lu_curr,95) v_cr(valorDeParametro:valorDeParametro)
                       end if
                       enddo ! loop for every param.
               end if ! params or not.
