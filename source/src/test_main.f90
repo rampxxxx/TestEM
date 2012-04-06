@@ -90,7 +90,8 @@ enddo
               ! write to file only the selected params or all if any.
               ! PARAMETERS
               if(size(cnf%file_parameters_i) == 0) then
-                      write(lu_stat,50) time, U, v_ve
+                      !no guardo nada
+                      !write(lu_stat,50) time, U, v_ve
               else
                       do numeroDeParametro=1 , size(cnf%file_parameters_i)
                       valorDeParametro = cnf%file_parameters_i(numeroDeParametro)
