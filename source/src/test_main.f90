@@ -20,6 +20,7 @@ program test_main
   real(rp), allocatable     :: dat_r(:)
   integer(ip), allocatable  :: dat_i(:)
   integer                   :: numeroDeParametro
+  integer                   :: numeroDeCurrent
   integer(ip)               :: valorDeParametro
 
   !.
@@ -74,6 +75,10 @@ write(*,*) "Numero de Parametros=>",size(cnf%file_parameters_i)
 do numeroDeParametro=1 , size(cnf%file_parameters_i)
 write(*,*) "Parametro=>", cnf%file_parameters_i(numeroDeParametro:numeroDeParametro)
 enddo
+write(*,*) "Numero de Corrientes=>",size(cnf%file_currents_i)
+do numeroDeCurrent=1 , size(cnf%file_currents_i)
+write(*,*) "Parametro=>", cnf%file_currents_i(numeroDeCurrent:numeroDeCurrent)
+enddo
 
 
   call get_time(t1)
@@ -105,6 +110,7 @@ enddo
                               write(lu_stat,95) v_ve(valorDeParametro:valorDeParametro)
                       end if
                       enddo ! loop for every param.
+                      write(lu_stat,'')   ! SALTO LINEA
               end if ! params or not.
               ! CURRENTS
               if(size(cnf%file_currents_i) == 0) then
@@ -128,6 +134,7 @@ enddo
                               write(lu_curr,95) v_cr(valorDeParametro:valorDeParametro)
                       end if
                       enddo ! loop for every param.
+                      write(lu_curr,'')   ! SALTO LINEA
               end if
               end if ! params or not.
       end if
@@ -152,7 +159,8 @@ enddo
 50 format (F15.2,50(2X,F15.10))
 60 format (A,2X,F16.3,2X,A)
 90 format (F15.2,50(2X,F15.10,$))
-95 format (50(2X,F15.10))
+!95 format (50(2X,F15.10))
+95 format (50(2X,F15.10,$))
 !60 format (F14.6,F12.6)
 end program test_main
 
