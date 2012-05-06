@@ -64,8 +64,8 @@ subroutine readconfile (cnf)
         if (io_err > 0) stop '>>>.Error reading parameter mask and values'
         allocate (cnf%prm%dat_i(n))
         allocate (cnf%prm%dat_r(n))
-        cnf%prm%dat_i(1:n)=dat_i
-        cnf%prm%dat_r(1:n)=dat_r
+        cnf%prm%dat_i(1:n)=dat_i(1:n)
+        cnf%prm%dat_r(1:n)=dat_r(1:n)
         !.
       elseif (index(strout,'#STEP') == 1) then
         !.
@@ -90,7 +90,7 @@ subroutine readconfile (cnf)
         read (lu_cfg, * ,iostat=io_err) n,(file_parameters_i(m),m=1,n)
         if (io_err > 0) stop '>>>.Error reading file parameters mask and values'
         allocate (cnf%file_parameters_i(n))
-        cnf%file_parameters_i(1:n)=file_parameters_i
+        cnf%file_parameters_i(1:n)=file_parameters_i(1:n)
         !cnf%file_parameters_i(1:n)=dat_i
         !.
        elseif (index(strout,'#FILE_CURRENTS') == 1) then
@@ -98,7 +98,7 @@ subroutine readconfile (cnf)
         read (lu_cfg, * ,iostat=io_err) n,(file_currents_i(m),m=1,n)
         if (io_err > 0) stop '>>>.Error reading file currents mask and values'
         allocate (cnf%file_currents_i(n))
-        cnf%file_currents_i(1:n)=file_currents_i
+        cnf%file_currents_i(1:n)=file_currents_i(1:n)
         !.
       else
           if (index(strout,'#END')     == 1) exit

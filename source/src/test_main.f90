@@ -61,24 +61,31 @@ program test_main
   time = step(1);
   ! Initialicing state variables and parameters
   aux = get_numstatevar(ict)
+write(*,*) "get_numstatevar=>",aux
   allocate(v_ve(aux))
   v_ve(1:aux)=get_ic_em(ict,aux)
+write(*,*) "get_ic_em=>",aux
   aux = get_numcur(ict)
+write(*,*) "get_numcur=>",aux
   allocate(v_cr(aux))
   call get_parameter_nd(ict,v_prm,aux);
+write(*,*) "get_parameter_nd=>",aux
   if(nprm>0) then
       v_prm(dat_i(1:nprm))=dat_r(1:nprm)
   endif
   U = initcond_elecmodel (ict) 
-
-write(*,*) "Numero de Parametros=>",size(cnf%file_parameters_i)
-do numeroDeParametro=1 , size(cnf%file_parameters_i)
-write(*,*) "Parametro=>", cnf%file_parameters_i(numeroDeParametro:numeroDeParametro)
-enddo
-write(*,*) "Numero de Corrientes=>",size(cnf%file_currents_i)
-do numeroDeCurrent=1 , size(cnf%file_currents_i)
-write(*,*) "Parametro=>", cnf%file_currents_i(numeroDeCurrent:numeroDeCurrent)
-enddo
+  if( allocated(cnf%file_parameters_i)) then
+          write(*,*) "Numero de Parametros a Disco=>",size(cnf%file_parameters_i)
+          do numeroDeParametro=1 , size(cnf%file_parameters_i)
+          write(*,*) "Parametro=>", cnf%file_parameters_i(numeroDeParametro:numeroDeParametro)
+          enddo
+  endif
+  if( allocated(cnf%file_currents_i)) then
+          write(*,*) "Numero de Corrientes=>",size(cnf%file_currents_i)
+          do numeroDeCurrent=1 , size(cnf%file_currents_i)
+          write(*,*) "Parametro=>", cnf%file_currents_i(numeroDeCurrent:numeroDeCurrent)
+          enddo
+  endif
 
 
   call get_time(t1)
@@ -86,62 +93,65 @@ enddo
     Istm = get_stimulus(cnf%stm, time, step(3))
 !
     if(iteration.ge.init_save) then
-      if(mod(iteration,outfreq) == 0) then
-              write(*,'(i,$)') iteration
-              write(*,*) "time=>" , time
-              write(*,*) "U=> " , U
-              write(*,*) "v_ve(1:1)=> ", v_ve(1:1)
-              write(*,*) "v_ve(2:2)=> ", v_ve(2:2)
-              ! write to file only the selected params or all if any.
-              ! PARAMETERS
-              if(size(cnf%file_parameters_i) == 0) then
-                      !no guardo nada
-                      !write(lu_stat,50) time, U, v_ve
-              else
-                      do numeroDeParametro=1 , size(cnf%file_parameters_i)
-                      valorDeParametro = cnf%file_parameters_i(numeroDeParametro)
-                      if(numeroDeParametro==1) then
-                              if(size(cnf%file_parameters_i) == 1) then
-                                      write(lu_stat,50) time, U , v_ve(valorDeParametro:valorDeParametro)
-                              else
-                                      write(lu_stat,90) time, U , v_ve(valorDeParametro:valorDeParametro)
-                              end if
-                      else
-                              write(lu_stat,95) v_ve(valorDeParametro:valorDeParametro)
-                      end if
-                      enddo ! loop for every param.
-                      write(lu_stat,'')   ! SALTO LINEA
-              end if ! params or not.
-              ! CURRENTS
-              if(size(cnf%file_currents_i) == 0) then
-                      !no guardo nada
-                      !write(lu_curr,50) time, v_cr
-              else
-              if(size(cnf%file_currents_i) == 1 .AND. cnf%file_currents_i(1)==0) then
-                      !guardo todo
-                      write(lu_curr,50) time, v_cr
-              else
-                      !guardo solo lo indicado.
-                      do numeroDeParametro=1 , size(cnf%file_currents_i)
-                      valorDeParametro = cnf%file_currents_i(numeroDeParametro)
-                      if(numeroDeParametro==1) then
-                              if(size(cnf%file_currents_i) == 1) then
-                                      write(lu_curr,50) time,     v_cr(valorDeParametro:valorDeParametro)
-                              else
-                                      write(lu_curr,90) time,     v_cr(valorDeParametro:valorDeParametro)
-                              end if
-                      else
-                              write(lu_curr,95) v_cr(valorDeParametro:valorDeParametro)
-                      end if
-                      enddo ! loop for every param.
-                      write(lu_curr,'')   ! SALTO LINEA
-              end if
-              end if ! params or not.
-      end if
+            if(mod(iteration,outfreq) == 0) then
+                    write(*,101) iteration
+                    write(*,*) "time=>" , time
+                    write(*,*) "U=> " , U
+                    write(*,*) "v_ve(1:1)=> ", v_ve(1:1)
+                    ! write to file only the selected params or all if any.
+                    ! PARAMETERS
+                    if(allocated(cnf%file_parameters_i))then
+                            if(size(cnf%file_parameters_i) == 0) then
+                                    !no guardo nada
+                                    !write(lu_stat,50) time, U, v_ve
+                            else
+                                    do numeroDeParametro=1 , size(cnf%file_parameters_i)
+                                    valorDeParametro = cnf%file_parameters_i(numeroDeParametro)
+                                    if(numeroDeParametro==1) then
+                                            if(size(cnf%file_parameters_i) == 1) then
+                                                    write(lu_stat,50) time, U , v_ve(valorDeParametro:valorDeParametro)
+                                            else
+                                                    write(lu_stat,90) time, U , v_ve(valorDeParametro:valorDeParametro)
+                                            end if
+                                    else
+                                            write(lu_stat,95) v_ve(valorDeParametro:valorDeParametro)
+                                    end if
+                                    enddo ! loop for every param.
+                                    write(lu_stat,'()')   ! SALTO LINEA
+                            end if ! params or not.
+                    endif
+                    ! CURRENTS
+                    if(allocated(cnf%file_currents_i))then
+                            if(size(cnf%file_currents_i) == 0) then
+                                    !no guardo nada
+                                    !write(lu_curr,50) time, v_cr
+                            else
+                                    if(size(cnf%file_currents_i) == 1 .AND. cnf%file_currents_i(1)==0) then
+                                            !guardo todo
+                                            write(lu_curr,50) time, v_cr
+                                    else
+                                            !guardo solo lo indicado.
+                                            do numeroDeParametro=1 , size(cnf%file_currents_i)
+                                            valorDeParametro = cnf%file_currents_i(numeroDeParametro)
+                                            if(numeroDeParametro==1) then
+                                                    if(size(cnf%file_currents_i) == 1) then
+                                                            write(lu_curr,50) time,     v_cr(valorDeParametro:valorDeParametro)
+                                                    else
+                                                            write(lu_curr,90) time,     v_cr(valorDeParametro:valorDeParametro)
+                                                    end if
+                                            else
+                                                    write(lu_curr,95) v_cr(valorDeParametro:valorDeParametro)
+                                            end if
+                                            enddo ! loop for every param.
+                                            write(lu_curr,'()')   ! SALTO LINEA
+                                    end if ! params or not.
+                            endif
+                    endif
+            end if
     endif
 !
     call get_Iion (ict,step(2),Istm,0.0_rp,U,0.0_rp,Qion, &
-                   v_prm(1:nprm),v_ve, v_cr)
+                   v_prm(1:mxprm),v_ve, v_cr)
     U = U - step(2) * (Qion+Istm);
     time = time + step(2);
     iteration = iteration + 1;
@@ -162,6 +172,7 @@ enddo
 !95 format (50(2X,F15.10))
 95 format (50(2X,F15.10,$))
 !60 format (F14.6,F12.6)
+101 format (10(I10,$))
 end program test_main
 
 

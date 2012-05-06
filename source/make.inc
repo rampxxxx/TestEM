@@ -18,7 +18,11 @@ HGPV  = $(HEMRC)/gpv
 
 LIB   =$(HOME)/lib
 #------------ Fortran Intel ----------------------------------------------------
-F95   = ifort
+#F95   = ifort
+F95   = gfortran
 #COM = -g -warn all -check bounds -p -traceback
-COM  = -O3 -xW -static
-MODU= -module $(HOME)/mod
+#COM  = -O3 -xW -static
+#COM  =  -g -O2 -fbounds-check -static #gfortran devel
+COM  = -O3 -ffast-math -march=native -funroll-loops -static #gfortran aprox # gfortran aprox 51s.
+#MODU= -module $(HOME)/mod
+MODU= -J $(HOME)/mod # gfortran
