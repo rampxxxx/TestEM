@@ -103,7 +103,7 @@ write(*,*) "get_parameter_nd=>",aux
                     if(allocated(cnf%file_parameters_i))then
                             if(size(cnf%file_parameters_i) == 0) then
                                     !no guardo nada
-                                    !write(lu_stat,50) time, U, v_ve
+                                    write(lu_stat,50) time, U
                             else
                                     do numeroDeParametro=1 , size(cnf%file_parameters_i)
                                     valorDeParametro = cnf%file_parameters_i(numeroDeParametro)
