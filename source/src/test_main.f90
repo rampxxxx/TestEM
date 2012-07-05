@@ -119,6 +119,10 @@ write(*,*) "get_parameter_nd=>",aux
                                     enddo ! loop for every param.
                                     write(lu_stat,'()')   ! SALTO LINEA
                             end if ! params or not.
+                    else
+                            !guardo el potencial de accion
+                            write(lu_stat,50) time, U
+
                     endif
                     ! CURRENTS
                     if(allocated(cnf%file_currents_i))then
